@@ -62,3 +62,39 @@ La clave era valida, pero la ruta no existe, por eso responde 404.
 npx tsc --noEmit
 
 El comando se ejecuto sin errores.
+
+
+
+En esta parte del PE-2.1 agregue pruebas unitarias con Jest para comprobar que los middlewares funcionen correctamente sin levantar el servidor.
+
+Para esto cree y configure los archivos necesarios para las pruebas:
+
+jest.config.ts
+src/middlewares/auth.test.ts
+src/middlewares/logger.test.ts
+
+Tambien modifique el package.json para agregar el script:
+
+"test": "jest"
+
+Las pruebas realizadas fueron para el middleware de autenticacion y para el logger. En auth.test.ts se valido que la API key sea obligatoria y que solo permita continuar cuando la clave sea correcta. En logger.test.ts se comprobo que el middleware registre la peticion y continue con next().
+
+Para ejecutar las pruebas use el comando:
+
+npm test
+
+Resultado obtenido:
+
+PS C:\Users\User\Downloads\api-anyela\api-anyela> npm test
+
+> api-anyela@1.0.0 test
+> jest
+
+ PASS  src/middlewares/auth.test.ts
+ PASS  src/middlewares/logger.test.ts
+
+Test Suites: 2 passed, 2 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        2.63 s, estimated 3 s
+Ran all test suites.

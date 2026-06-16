@@ -1,10 +1,10 @@
-import { type Request, type Response, type NextFunction } from 'express'
+import { type Request, type Response, type NextFunction } from 'express';
 
 export function logger(req: Request, res: Response, next: NextFunction): void {
-    const start = Date.now()
+    const start = Date.now();
     res.on('finish', () => {
-        const duration = Date.now() - start
-        console.log(`[${req.method}] ${req.path} - ${res.statusCode} - ${duration}ms`)
-    })
-    next()
+        const duration = Date.now() - start;
+        console.log(`[${req.method}] ${req.path} - ${res.statusCode} - ${duration}ms`);
+    });
+    next();
 }
