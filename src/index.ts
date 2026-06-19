@@ -2,6 +2,9 @@ import express, { type Request, type Response, type NextFunction } from 'express
 import { logger } from './middlewares/logger.js'
 import { auth } from './middlewares/auth.js'
 
+import v1Inscripciones from './routes/v1/inscripciones.js'
+import v2Inscripciones from './routes/v2/inscripciones.js'
+
 const app = express()
 const PORT = 3000
 
@@ -17,9 +20,10 @@ app.get('/health', (_req: Request, res: Response): void => {
     })
 })
 
-app.use((_req: Request, res: Response): void => {
-    res.status(404).json({ code: 404, error: 'Ruta no encontrada' })
-})
+app.use('/v1/inscripciones', v1Inscripciones)
+app.use('/v2/inscripciones', v2Inscripciones)
+
+
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction): void => {
     console.error(err.stack)
@@ -27,5 +31,5 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction): void =>
 })
 
 app.listen(PORT, (): void => {
-    console.log('Servidor iniciado')
+    console.log(`Servidor iniciado en puerto ${PORT}`)
 })
