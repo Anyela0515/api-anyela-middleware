@@ -177,25 +177,25 @@ Las pruebas se realizaron con el servidor en `http://localhost:3000` y usando el
 
 La ruta `POST /v1/inscripciones` respondio con `201 Created`.
 
-![Prueba v1 correcta](docs/screenshots/v1.png)
+![Prueba v1 correcta](docs/screenshots/01-v1-201.png)
 
 ### Escenario 2: inscripcion v2 correcta
 
 La ruta `POST /v2/inscripciones` respondio con `201 Created` al enviar el metodo de pago.
 
-![Prueba v2 correcta](docs/screenshots/v2.png)
+![Prueba v2 correcta](docs/screenshots/02-v2-201.png)
 
 ### Escenario 3: v2 sin metodo_pago
 
 Al no enviar `metodo_pago`, la API respondio con `400 Bad Request`.
 
-![Prueba v2 sin metodo\_pago](docs/screenshots/v2-400-faltante.png)
+![Prueba v2 sin metodo_pago](docs/screenshots/03-v2-400-faltante.png)
 
 ### Escenario 4: v2 con metodo_pago invalido
 
 Al enviar `Cheque` como metodo de pago, la API respondio con `400 Bad Request`.
 
-![Prueba v2 con metodo\_pago invalido](docs/screenshots/v2-400-invalido.png)
+![Prueba v2 con metodo_pago invalido](docs/screenshots/04-v2-400-invalido.png)
 
 ## Versionado
 
