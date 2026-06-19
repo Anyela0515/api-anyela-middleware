@@ -98,3 +98,107 @@ Tests:       5 passed, 5 total
 Snapshots:   0 total
 Time:        2.63 s, estimated 3 s
 Ran all test suites.
+
+
+
+## Documentacion del endpoint
+
+En esta practica se documento el endpoint `POST /v2/inscripciones` bueno sta ruta sirve para registrar una inscripcion, enviando el id del estudiante, las materias, el periodo y el metodo de pago.
+
+Para usar este endpoint se debe enviar el header `x-api-key: secreto-demo`, ya que la API tiene autenticacion por clave.
+
+Ejemplo de body correcto:
+
+```json
+{
+  "estudianteId": 1150154639,
+  "materias": [
+    "Programacion de Middleware",
+    "Gestion de Servicios Cloud"
+  ],
+  "periodoId": 2,
+  "metodo_pago": "Efectivo"
+}
+```
+
+Si los datos estan completos, la API responde con `201 Created`.
+
+```json
+{
+  "version": "v2",
+  "message": {
+    "estudianteId": 1150154639,
+    "materias": [
+      "Programacion de Middleware",
+      "Gestion de Servicios Cloud"
+    ],
+    "periodoId": 2,
+    "metodo_pago": "Efectivo"
+  }
+}
+```
+
+Si falta un campo obligatorio o el metodo de pago no es valido, la API responde con `400 Bad Request`.
+
+```json
+{
+  "error": "Campos requeridos del estudianteId, materias, periodoId"
+}
+```
+
+```json
+{
+  "error": "El metodo de pago insertado debe ser: Efectivo, Debito, Credito o Transferencia"
+}
+```
+
+## Contrato OpenAPI 3.1
+
+Se agrego el archivo `openapi.yaml` en la raiz del repositorio en este archivo se documentaron las rutas `/health`, `/v1/inscripciones` y `/v2/inscripciones`, junto con sus datos de entrada, respuestas y errores posibles.
+
+El contrato se valido con:
+
+```bash
+npx @redocly/cli lint openapi.yaml
+```
+
+Tambien se comprobo que el proyecto siga funcionando con:
+
+```bash
+npx tsc --noEmit
+npm test
+```
+
+## Pruebas en Postman
+
+Las pruebas se realizaron con el servidor en `http://localhost:3000` y usando el header `x-api-key: secreto-demo`.
+
+### Escenario 1: inscripcion v1 correcta
+
+La ruta `POST /v1/inscripciones` respondio con `201 Created`.
+
+![Prueba v1 correcta](docs/screenshots/v1.png)
+
+### Escenario 2: inscripcion v2 correcta
+
+La ruta `POST /v2/inscripciones` respondio con `201 Created` al enviar el metodo de pago.
+
+![Prueba v2 correcta](docs/screenshots/v2.png)
+
+### Escenario 3: v2 sin metodo_pago
+
+Al no enviar `metodo_pago`, la API respondio con `400 Bad Request`.
+
+![Prueba v2 sin metodo\_pago](docs/screenshots/v2-400-faltante.png)
+
+### Escenario 4: v2 con metodo_pago invalido
+
+Al enviar `Cheque` como metodo de pago, la API respondio con `400 Bad Request`.
+
+![Prueba v2 con metodo\_pago invalido](docs/screenshots/v2-400-invalido.png)
+
+## Versionado
+
+Un cambio compatible seria agregar un campo opcional como `observacion`, porque los clientes actuales podrian seguir enviando los mismos datos y la API seguiria funcionando.
+
+Un cambio que romperia la compatibilidad seria cambiar `metodo_pago` por `forma_pago`, porque los clientes que ya usan `metodo_pago` empezarian a recibir error `400 Bad Request`.

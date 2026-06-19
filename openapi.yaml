@@ -1,0 +1,255 @@
+openapi: "3.1.0"
+
+info:
+  title: UIDE Inscripciones API
+  version: "2.0.0"
+  license:
+    name: MIT
+    identifier: MIT
+
+servers:
+  - url: http://127.0.0.1:3000
+    description: Desarrollo local
+
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Estado del servidor
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Servidor activo.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              example:
+                code: 200
+                status: "API saludable"
+                timestamp: "2026-06-19T19:08:18.412Z"
+        "401":
+          description: API key ausente o invalida.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+              example:
+                error: "API key inválida o ausente"
+
+  /v1/inscripciones:
+    post:
+      operationId: crearInscripcionV1
+      summary: Crear inscripción contrato v1
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InscripcionV1"
+            example:
+              estudianteId: 1150154639
+              materias:
+                - "Programacion de Middleware"
+                - "Gestion de Servicios Cloud"
+              periodoId: 2
+      responses:
+        "201":
+          description: Inscripción creada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InscripcionV1Response"
+              example:
+                version: "v1"
+                message:
+                  estudianteId: 1150154639
+                  materias:
+                    - "Programacion de Middleware"
+                    - "Gestion de Servicios Cloud"
+                  periodoId: 2
+        "400":
+          description: Payload inválido.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Campos requeridos: estudianteId, materias, periodoId"
+        "401":
+          description: API key ausente o invalida.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+              example:
+                error: "API key inválida o ausente"
+
+  /v2/inscripciones:
+    post:
+      operationId: crearInscripcionV2
+      summary: Crear inscripción con método de pago contrato v2
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InscripcionV2"
+            example:
+              estudianteId: 1150154639
+              materias:
+                - "Programacion de Middleware"
+                - "Gestion de Servicios Cloud"
+              periodoId: 2
+              metodo_pago: "Efectivo"
+      responses:
+        "201":
+          description: Inscripción creada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InscripcionV2Response"
+              example:
+                version: "v2"
+                message:
+                  estudianteId: 1150154639
+                  materias:
+                    - "Programacion de Middleware"
+                    - "Gestion de Servicios Cloud"
+                  periodoId: 2
+                  metodo_pago: "Efectivo"
+        "400":
+          description: Payload inválido o metodo_pago fuera de enum.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                campoFaltante:
+                  summary: Falta un campo requerido
+                  value:
+                    error: "Campos requeridos del estudianteId, materias, periodoId"
+                metodoInvalido:
+                  summary: metodo_pago no permitido
+                  value:
+                    error: "El metodo de pago insertado debe ser: Efectivo, Débito, Crédito o Transferencia"
+        "401":
+          description: API key ausente o invalida.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+              example:
+                error: "API key inválida o ausente"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - code
+        - status
+        - timestamp
+      properties:
+        code:
+          type: integer
+          example: 200
+        status:
+          type: string
+          example: "API saludable"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-19T19:08:18.412Z"
+
+    InscripcionV1:
+      type: object
+      required:
+        - estudianteId
+        - materias
+        - periodoId
+      properties:
+        estudianteId:
+          type: integer
+          example: 1150154639
+        materias:
+          type: array
+          minItems: 1
+          items:
+            type: string
+          example:
+            - "Programacion de Middleware"
+            - "Gestion de Servicios Cloud"
+        periodoId:
+          type: integer
+          example: 2
+
+    InscripcionV2:
+      allOf:
+        - $ref: "#/components/schemas/InscripcionV1"
+        - type: object
+          required:
+            - metodo_pago
+          properties:
+            metodo_pago:
+              type: string
+              enum:
+                - Efectivo
+                - Transferencia
+                - Débito
+                - Crédito
+              example: "Efectivo"
+      unevaluatedProperties: false
+
+    InscripcionV1Response:
+      type: object
+      required:
+        - version
+        - message
+      properties:
+        version:
+          type: string
+          example: "v1"
+        message:
+          $ref: "#/components/schemas/InscripcionV1"
+
+    InscripcionV2Response:
+      type: object
+      required:
+        - version
+        - message
+      properties:
+        version:
+          type: string
+          example: "v2"
+        message:
+          $ref: "#/components/schemas/InscripcionV2"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Campos requeridos del estudianteId, materias, periodoId"
+
+    AuthError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "API key inválida o ausente"
