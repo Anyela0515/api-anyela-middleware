@@ -202,3 +202,15 @@ Al enviar `Cheque` como metodo de pago, la API respondio con `400 Bad Request`.
 Un cambio compatible seria agregar un campo opcional como `observacion`, porque los clientes actuales podrian seguir enviando los mismos datos y la API seguiria funcionando.
 
 Un cambio que romperia la compatibilidad seria cambiar `metodo_pago` por `forma_pago`, porque los clientes que ya usan `metodo_pago` empezarian a recibir error `400 Bad Request`.
+
+
+- TA-2.2 Documento OpenAPI refinado
+
+Resultado de la validacion del contrato OpenAPI:
+
+![Lint OpenAPI sin errores](docs/screenshots/05-lint-openapi.png)
+
+
+## Reflexion
+
+Si otro equipo empezara a consumir mi API mañana, lo primero que cambiaria en el contrato seria hacerlo mas completo y facil de entender para otras personas. Agregaria ejemplos claros de como enviar los datos, las respuestas que puede devolver la API y los errores que podrian aparecer cuando falte algun campo o cuando un dato no sea valido. Tambien cuidaria no cambiar de golpe los nombres de los campos que ya existen, porque eso podria afectar a quienes ya esten usando la API. Si necesito agregar algo nuevo, lo haria como campo opcional o en una nueva version para que el otro equipo pueda adaptarse sin problemas en si
