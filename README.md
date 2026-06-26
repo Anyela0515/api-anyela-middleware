@@ -254,7 +254,7 @@ Las pruebas se realizaron en Postman usando la ruta:
 POST http://localhost:3000/v2/inscripciones
 
 Prueba 1 token valido
-![Prueba 1 token valido](PE23_prueba1_201.png)
+![Prueba 1 token valido](docs/screenshots/PE23_prueba1_201.png)
 
 En la primera prueba se genero un token valido con generate-token.mjs y se uso en Postman como Bearer Token. En el body se envio una inscripcion con los campos estudianteId, materias, periodoId y metodo_pago, usando la misma estructura trabajada en clase.
 
@@ -271,7 +271,7 @@ La API respondio con 201 Created, lo que confirma que el token valido fue acepta
 
 
 Prueba 2 firma invalida
-![Prueba 2 firma invalida](PE23_prueba2_401.png)
+![Prueba 2 firma invalida](docs/screenshots/PE23_prueba2_401.png)
 En la segunda prueba se uso un token con firma invalida para comprobar que el servidor rechace tokens alterados.
 
 Token usado:
@@ -281,7 +281,7 @@ eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.FIRMA_INVALIDA
 La API respondio con 401 Unauthorized y mostro el mensaje Firma invalida. Esto confirma que el middleware esta verificando la firma del token antes de dejar pasar la peticion.
 
 Prueba 3 alg none
-![Prueba 3 alg none](PE23_prueba3_401.png)
+![Prueba 3 alg none](docs/screenshots/PE23_prueba3_401.png)
 
 En la tercera prueba se uso un token con alg:none para comprobar que el servidor no acepte tokens sin firma segura.
 
