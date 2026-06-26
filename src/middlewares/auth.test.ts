@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { auth } from './auth';
+import { requireJwt } from './auth';
 
 describe('Auth Middleware', () => {
     let mockReq: Partial<Request>;
@@ -18,7 +18,7 @@ describe('Auth Middleware', () => {
     });
 
     it('Debe retornar status 401 si el header x-api-key esta ausente', () => {
-        auth(mockReq as Request, mockRes as Response, mockNext);
+        requireJwt(mockReq as Request, mockRes as Response, mockNext);
         
         expect(mockRes.status).toHaveBeenCalledWith(401);
         expect(mockRes.json).toHaveBeenCalledWith({ code: 401, error: 'API key inválida o ausente' });
@@ -28,7 +28,7 @@ describe('Auth Middleware', () => {
     it('Debe retornar status 401 si la clave es incorrecta', () => {
         mockReq.headers = { 'x-api-key': 'clave-equivocada' };
         
-        auth(mockReq as Request, mockRes as Response, mockNext);
+        requireJwt(mockReq as Request, mockRes as Response, mockNext);
         
         expect(mockRes.status).toHaveBeenCalledWith(401);
         expect(mockRes.json).toHaveBeenCalledWith({ code: 401, error: 'API key inválida o ausente' });
@@ -38,7 +38,7 @@ describe('Auth Middleware', () => {
     it('Debe invocar next() si la clave es valida sin emitir respuesta', () => {
         mockReq.headers = { 'x-api-key': 'secreto-demo' }; 
         
-        auth(mockReq as Request, mockRes as Response, mockNext);
+        requireJwt(mockReq as Request, mockRes as Response, mockNext);
         
         expect(mockNext).toHaveBeenCalledTimes(1);
         expect(mockRes.status).not.toHaveBeenCalled();

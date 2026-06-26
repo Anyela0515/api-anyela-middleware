@@ -1,6 +1,7 @@
+import { rateLimiter } from './middlewares/rateLimiter.js'
 import express, { type Request, type Response, type NextFunction } from 'express'
 import { logger } from './middlewares/logger.js'
-import { auth } from './middlewares/auth.js'
+import { requireJwt } from './middlewares/auth.js';
 
 import v1Inscripciones from './routes/v1/inscripciones.js'
 import v2Inscripciones from './routes/v2/inscripciones.js'
@@ -10,7 +11,8 @@ const PORT = 3000
 
 app.use(express.json())
 app.use(logger)
-app.use(auth)
+app.use(requireJwt)
+app.use(rateLimiter)
 
 app.get('/health', (_req: Request, res: Response): void => {
     res.json({
